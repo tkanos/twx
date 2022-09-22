@@ -17,8 +17,9 @@ var t tweet
 
 // followCmd represents the follow command
 var tweetCmd = &cobra.Command{
-	Use:   "tweet [-r hash] <tweet>",
-	Short: "Tweet or reply a  text",
+	Use:     "tweet [-r hash] <tweet>",
+	Aliases: []string{"post", "twt"},
+	Short:   "Tweet or reply a  text",
 	Long: `tweet or reply a text
 	
 	Example: 

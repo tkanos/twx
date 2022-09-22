@@ -3,12 +3,9 @@
 A decentralised microblogging client based on the specs of [twtxt](https://dev.twtxt.net/), used to handle your twtxt file.
 
 
-Todo :
-Before to push
-- do README file
 
-After Push :
-Timeline : 
+# Todo :
+## Timeline : 
 - Tweet @nick will replace before to append
 - replace on timeline  @nick or @<nick url> and present it like : @nick@url
 - highlight tags
@@ -23,43 +20,43 @@ Timeline :
 - timeline generates microformat v2 (https://microformats.org/wiki/microformats2) => html to see
 - timeline with thread organized
 
-Follow : 
+## Follow : 
 - timeout: on http client
 
-Tweet :
-- call it as well post
+## Tweet :
 - character_limit: shorten incoming tweets with more characters
 - character_warning: warn when composed tweet has more characters
 - Encryption
 
-Cache :
+## Cache :
 - use_cache : cache remote twtxt files locally (with parquet)
 - timeline_update_interval: time in seconds cache is considered up-to-date
 
-New Commands :
+## New Commands :
 - Thread command
 - Tag Command (like Thread actually)
 - User Tweets Command
 - User Profile (metadata) Command
 
-Hook :
+## Hook :
 - yarn connection post (with keeping connection)
 - github integration (nick/twtxt.txt)
 - drive integration
 - one drive integration 
 
-CI/CD :
+## CI/CD :
 - cmd line test : https://github.com/google/go-cmdtest or other script
 - https://github.com/orlangure/gocovsh
+- Unit Tests
+- Test on Apple
 - https://goreleaser.com/
 - circleCI
 
 
-README.md
+## README.md
+- do README file
 - do a demo like : https://github.com/orlangure/gocovsh
 
-Web-Server :
+## Web-Server :
 - local web server
 - local gemini server
-
-
