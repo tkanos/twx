@@ -5,7 +5,6 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 
 Todo :
 Before to push
-- PreHook and PostHook
 - do README file
 
 After Push :

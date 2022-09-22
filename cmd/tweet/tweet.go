@@ -2,18 +2,19 @@ package tweet
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
+	"github.com/tkanos/twx/config"
 	"github.com/tkanos/twx/twtfile"
 )
 
 var t tweet
-
-const template string = "%s (#%s) %s"
 
 // followCmd represents the follow command
 var tweetCmd = &cobra.Command{
@@ -24,6 +25,17 @@ var tweetCmd = &cobra.Command{
 	Example: 
 	tweet Hello world
 	tweet -r ab123c Nice to meet you.`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		if context.Config.Twtxt.PreTweetHook != "" {
+			cmd := exec.Command("/bin/sh", "-c", context.Config.Twtxt.PreTweetHook)
+			cmd.Dir = config.HomeDirectory()
+
+			err := cmd.Run()
+			if err != nil {
+				log.Fatalf("Could not execute PreHook: %s", err)
+			}
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			os.Exit(1)
@@ -33,6 +45,17 @@ var tweetCmd = &cobra.Command{
 			panic(err)
 		}
 
+	},
+	PostRun: func(cmd *cobra.Command, args []string) {
+		if context.Config.Twtxt.PostTweetHook != "" {
+			cmd := exec.Command("/bin/sh", "-c", context.Config.Twtxt.PostTweetHook)
+			cmd.Dir = config.HomeDirectory()
+
+			err := cmd.Run()
+			if err != nil {
+				log.Fatalf("Could not execute PostHook: %s", err)
+			}
+		}
 	},
 }
 
