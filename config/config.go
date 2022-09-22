@@ -45,8 +45,6 @@ type TwtxtConfig struct {
 	Porcelain bool
 	//disclose_identity: include nick and twturl in twtxt’s user-agent
 	DiscloseIdentity bool
-	//character_limit: shorten incoming tweets with more characters
-	CharacterLimit int
 	//character_warning: warn when composed tweet has more characters
 	CharacterWarning int
 	//limit_timeline: limit amount of tweets shown in your timeline
@@ -151,7 +149,6 @@ func bindDefault() {
 	config.Twtxt.CheckFollowing = true
 	config.Twtxt.CheckFollowing = true
 	config.Twtxt.UseCache = true
-	config.Twtxt.CharacterLimit = -1
 	config.Twtxt.CharacterWarning = -1
 	config.Twtxt.LimitTimeline = 20
 	config.Twtxt.TimelineUpdateInterval = 10
@@ -209,11 +206,6 @@ func bindEnv() {
 	if v := os.Getenv("TWTXT_USE_ABS_TIME"); v != "" {
 		if boolValue, err := strconv.ParseBool(v); err == nil {
 			config.Twtxt.UseAbsTime = boolValue
-		}
-	}
-	if v := os.Getenv("TWTXT_CHARACTER_LIMIT"); v != "" {
-		if intValue, err := strconv.Atoi(v); err == nil {
-			config.Twtxt.CharacterLimit = intValue
 		}
 	}
 	if v := os.Getenv("TWTXT_CHARACTER_WARNING"); v != "" {

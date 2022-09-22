@@ -19,7 +19,6 @@ use_pager = False
 use_cache = True
 porcelain = False
 disclose_identity = False
-character_limit = 140
 character_warning = 140
 limit_timeline = 20
 timeline_update_interval = 10
@@ -47,7 +46,6 @@ alice = "https://example.org/alice.txt"
 |use_cache|BOOL|True|cache remote twtxt files locally|
 |porcelain|BOOL|False|style output in an easy-to-parse format |
 |disclose_identity|BOOL|False|include nick and twturl in twtxt’s user-agent and metadata |
-|character_limit|INT|None|shorten incoming tweets with more characters|
 |character_warning|INT|None|warn when composed tweet has more characters|
 |limit_timeline|INT|20|limit amount of tweets shown in your timeline|
 |timeline_update_interval|INT|10|time in seconds cache is considered up-to-date|
