@@ -13,6 +13,7 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 - porcelain style output in an easy-to-parse format (without pretty things)
 - limit_timeline: limit amount of tweets shown in your timeline
 - use_abs_time: use absolute datetimes in your timeline
+- timeline_show_ascii_images Show images on ascii
 - timeline --web
 - timeline --gemini
 - timeline generates microformat v2 (https://microformats.org/wiki/microformats2) => html to see
@@ -32,6 +33,7 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 - Tag Command (like Thread actually)
 - see users's Tweets Command
 - User Profile (metadata) Command
+- Mentions and Replied Thread Commands
 
 ## Hook :
 - yarn connection post (with keeping connection)
