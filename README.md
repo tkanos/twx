@@ -9,7 +9,6 @@ Before to push
 - PreHook and PostHook
 - Tweet @nick will replace before to append
 - replace on timeline  @nick or @<nick url> and present it like : @nick@url
-- Add readme.md for configuration
 - do README file
 
 After Push :
