@@ -1,0 +1,8 @@
+[twtxt]
+Nick              = "Nick"
+twtfile           = "/twtxt/twtxt.txt" # On docker
+twturl            = "http://localhost:9999/" # On docker
+disclose_identity = true
+
+[following]
+twtxt_news = "https://buckket.org/twtxt_news.txt" 
