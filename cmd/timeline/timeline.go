@@ -23,7 +23,7 @@ var timelineCmd = &cobra.Command{
 	timeline`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		t.f = twtfile.NewFetcher(context.Version, context.Config.Twtxt.DiscloseIdentity)
+		t.f = twtfile.NewFetcher(context.Version, context.Config.Twtxt.DiscloseIdentity, context.Config.TimeoutDuration())
 
 		if err := t.Run(strings.Join(args, "")); err != nil {
 			log.Fatal(err)

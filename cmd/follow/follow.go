@@ -29,6 +29,8 @@ var followCmd = &cobra.Command{
 			log.Fatal("Wrong Arguments passed")
 		}
 
+		f.client = getHTTPClient(context.Config.TimeoutDuration())
+
 		if err := f.Run(args[0], args[1]); err != nil {
 			log.Fatal(err)
 		}
@@ -39,9 +41,7 @@ var replace bool
 
 func Init(rootCmd *cobra.Command) {
 
-	f = follow{
-		client: getHTTPClient(10 * time.Second),
-	}
+	f = follow{}
 
 	followCmd.Flags().BoolVarP(&replace, "replace", "r", false, "if the nick exist it will be replaced")
 

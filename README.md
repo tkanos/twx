@@ -6,11 +6,9 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 
 # Todo :
 ## Timeline : 
-- Tweet @nick will replace before to append
-- replace on timeline  @nick or @<nick url> and present it like : @nick@url
+- replace on timeline @nick or @<nick url> and present it like : @nick@url
 - highlight tags
 - add mkdown integration + color
-- timeout: on http client
 - use_pager: use a pager (less) to display your timeline
 - porcelain style output in an easy-to-parse format
 - limit_timeline: limit amount of tweets shown in your timeline
@@ -20,13 +18,11 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 - timeline generates microformat v2 (https://microformats.org/wiki/microformats2) => html to see
 - timeline with thread organized
 
-## Follow : 
-- timeout: on http client
-
 ## Tweet :
+- Tweet @nick will replace before to append
 - character_limit: shorten incoming tweets with more characters
 - character_warning: warn when composed tweet has more characters
-- Encryption
+- date + Encryption 
 
 ## Cache :
 - use_cache : cache remote twtxt files locally (with parquet)
@@ -35,7 +31,7 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 ## New Commands :
 - Thread command
 - Tag Command (like Thread actually)
-- User Tweets Command
+- see users's Tweets Command
 - User Profile (metadata) Command
 
 ## Hook :

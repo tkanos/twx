@@ -15,17 +15,17 @@ import (
 	"github.com/makeworld-the-better-one/go-gemini"
 )
 
-func init() {
-	getHTTPClient(10 * time.Second)
-}
-
 type Fetcher struct {
 	version          string
 	discloseIdentity bool
+	client           *http.Client
 }
 
-func NewFetcher(version string, discloseIdentity bool) *Fetcher {
-	return &Fetcher{version, discloseIdentity}
+func NewFetcher(version string, discloseIdentity bool, timeout time.Duration) *Fetcher {
+	return &Fetcher{version: version,
+		discloseIdentity: discloseIdentity,
+		client:           getHTTPClient(timeout),
+	}
 }
 
 func (f *Fetcher) Fetch(nick, url string) (Tweets, TweetMetadata, error) {
