@@ -3,6 +3,7 @@ package quickstart
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/user"
 	"path"
@@ -25,11 +26,11 @@ var quickstartCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		configFilePath, err := cmd.Flags().GetString("config")
 		if err != nil {
-			os.Exit(1)
+			log.Fatal(err)
 		}
 		q.configFilePath = utils.ExpandTilde(configFilePath)
 		if err := q.Run(); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	},
 }

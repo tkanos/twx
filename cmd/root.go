@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -32,33 +33,29 @@ to quickly create a Cobra application.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		configFilePath, err := cmd.Flags().GetString("config")
 		if err != nil {
-			os.Exit(1)
+			log.Fatalf("Cannot Get config file: %s", err)
 		}
 
 		configFilePath = utils.ExpandTilde(configFilePath)
 		if context.Config, err = config.NewConfig(configFilePath); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 
 		if twtFile := context.Config.Twtxt.TwtFile; twtFile == "" {
-			fmt.Println("Config Twtxt.TwtFile not define")
-			os.Exit(1)
+			log.Fatalf("Cannot Get config file: %s", err)
 		} else {
 			twtFile = utils.ExpandTilde(twtFile)
 			if _, err := os.Stat(twtFile); err != nil {
 				//if it does not exist we should create it
 				file, err := os.Create(twtFile)
 				if err != nil {
-					fmt.Println(err)
-					os.Exit(1)
+					log.Fatalf("Cannot open twtxt file: %s", err)
 				}
 				defer file.Close()
 			}
 			context.TwtFile, err = twtfile.NewTwtFile(context.Config.Twtxt.Nick, twtFile, context.Config.Twtxt.TwtURL)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				log.Fatal(err)
 			}
 		}
 	},
@@ -69,7 +66,7 @@ to quickly create a Cobra application.`,
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
 

@@ -2,9 +2,9 @@ package follow
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -26,12 +26,11 @@ var followCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) < 2 {
-			fmt.Println("Wrong Arguments passed")
-			os.Exit(1)
+			log.Fatal("Wrong Arguments passed")
 		}
 
 		if err := f.Run(args[0], args[1]); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	},
 }

@@ -3,7 +3,6 @@ package tweet
 import (
 	"fmt"
 	"log"
-	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -38,11 +37,11 @@ var tweetCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			os.Exit(1)
+			log.Fatal("Wrong arguments")
 		}
 
 		if err := t.Run(strings.Join(args, "")); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 	},

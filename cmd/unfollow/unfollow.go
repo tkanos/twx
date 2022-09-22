@@ -1,7 +1,7 @@
 package unfollow
 
 import (
-	"os"
+	"log"
 
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
@@ -18,11 +18,11 @@ var unfollowCmd = &cobra.Command{
 	Example: unfollow Nick`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			os.Exit(1)
+			log.Fatal("Wrong arguments")
 		}
 
 		if err := f.Run(args[0]); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	},
 }

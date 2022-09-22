@@ -2,6 +2,7 @@ package timeline
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"strings"
 
@@ -25,7 +26,7 @@ var timelineCmd = &cobra.Command{
 		t.f = twtfile.NewFetcher(context.Version, context.Config.Twtxt.DiscloseIdentity)
 
 		if err := t.Run(strings.Join(args, "")); err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 
 	},
