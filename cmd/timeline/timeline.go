@@ -57,21 +57,30 @@ func (t *timeline) Run(text string) error {
 	// Adding my own tweets
 	tweets = append(tweets, context.TwtFile.Tweets...)
 
-	if reverse {
-		if strings.ToLower(context.Config.Twtxt.Sorting) == "descending" {
-			sort.Sort(sort.Reverse(tweets))
-		} else {
-			sort.Sort(tweets)
-		}
-	} else {
-		if strings.ToLower(context.Config.Twtxt.Sorting) == "descending" {
-			sort.Sort(tweets)
-		} else {
-			sort.Sort(sort.Reverse(tweets))
-		}
-	}
+	// Sorting Tweets
+	tweets = t.Sort(tweets, context.Config.Twtxt.Sorting, context.Config.Twtxt.LimitTimeline, reverse)
 
 	fmt.Println(tweets)
 
 	return nil
+}
+
+func (t *timeline) Sort(tweets twtfile.Tweets, sorting string, limit int, reverse bool) twtfile.Tweets {
+	sort.Sort(sort.Reverse(tweets))
+
+	if limit > 0 && len(tweets) > limit {
+		tweets = tweets[:limit]
+	}
+
+	if reverse {
+		if strings.ToLower(sorting) == "ascending" {
+			sort.Sort(tweets)
+		}
+	} else {
+		if strings.ToLower(sorting) != "ascending" {
+			sort.Sort(tweets)
+		}
+	}
+
+	return tweets
 }

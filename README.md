@@ -12,7 +12,6 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 - add mkdown integration + color
 - use_pager: use a pager (less) to display your timeline (sorting not apply here)
 - porcelain style output in an easy-to-parse format (without pretty things)
-- limit_timeline: limit amount of tweets shown in your timeline
 - use_abs_time: use absolute datetimes in your timeline
 - timeline_show_ascii_images Show images on ascii
 - timeline --web
