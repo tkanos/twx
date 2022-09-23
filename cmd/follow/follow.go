@@ -43,7 +43,7 @@ var followCmd = &cobra.Command{
 		}
 
 		//Write TwtxtFile Metadata
-		context.TwtFile.SaveTwtxtFileWithMetadata(context.Config.Twtxt.DiscloseIdentity)
+		context.TwtFile.Save(context.Config.Twtxt.DiscloseIdentity)
 
 	},
 }

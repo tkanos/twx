@@ -22,7 +22,7 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 ## Tweet :
 - Tweet @nick will replace before to append
 - character_warning: warn when composed tweet has more characters
-- date + Encryption 
+- Encryption 
 
 ## Cache :
 - use_cache : cache remote twtxt files locally (with parquet)

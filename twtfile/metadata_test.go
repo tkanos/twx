@@ -49,3 +49,90 @@ func TestCreateTwtxtTemplate(t *testing.T) {
 
 	assert.Equal(t, expectedTemplate, string(b), "twtxt file template should be generated")
 }
+
+func TestParseMeta(t *testing.T) {
+
+	// Arrange
+	test_data := []struct {
+		line     string
+		expected TweetMetadata
+		message  string
+	}{
+		{
+			line:     "This is a line not strating by #",
+			expected: TweetMetadata{},
+			message:  "1. Shoudln't parse not strating by # lines",
+		},
+		{
+			line:     "",
+			expected: TweetMetadata{},
+			message:  "2. Shoudln't parse empty lines",
+		},
+		{
+			line:     "#",
+			expected: TweetMetadata{},
+			message:  "3. Shoudln't parse empty lines, starting by #",
+		},
+		{
+			line:     "#  This is a comment",
+			expected: TweetMetadata{},
+			message:  "4. Shoudln't parse commented lines",
+		},
+		{
+			line:     `#  nick = Nick`,
+			expected: TweetMetadata{Nick: "Nick"},
+			message:  "5. Shoud parse nick",
+		},
+		{
+			line:     `#  Nick  =   Nick`,
+			expected: TweetMetadata{Nick: "Nick"},
+			message:  "6. Shoud parse Nick",
+		},
+		{
+			line:     `#  url = http://myurl.com`,
+			expected: TweetMetadata{URL: "http://myurl.com"},
+			message:  "7. Shoud parse url",
+		},
+		{
+			line:     `#  description = my description`,
+			expected: TweetMetadata{Description: "my description"},
+			message:  "8. Shoud parse desciption",
+		},
+		{
+			line:     `#  avatar = http://myurl.com`,
+			expected: TweetMetadata{Avatar: "http://myurl.com"},
+			message:  "9. Shoud parse avatar",
+		},
+		{
+			line:     `#  followers    =   1`,
+			expected: TweetMetadata{Followers: 1},
+			message:  "10. Shoud parse followers",
+		},
+		{
+			line:     `#  following    =   1`,
+			expected: TweetMetadata{Following: 1},
+			message:  "11. Shoud parse following",
+		},
+		{
+			line:     `#  link    =  me http://myurl.com`,
+			expected: TweetMetadata{Link: map[string]string{"me": "http://myurl.com"}},
+			message:  "12. Shoud parse link",
+		},
+		{
+			line:     `#  follow    =  me http://myurl.com`,
+			expected: TweetMetadata{Follow: map[string]string{"me": "http://myurl.com"}},
+			message:  "12. Shoud parse follow",
+		},
+	}
+
+	// Act
+	for _, tt := range test_data {
+
+		actual := TweetMetadata{}
+		actual = parseMeta(tt.line, actual)
+
+		assert.Equal(t, tt.expected, actual, tt.message)
+
+	}
+
+}

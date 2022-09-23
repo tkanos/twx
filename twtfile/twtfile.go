@@ -98,7 +98,7 @@ func getReplyHash(replyHash string) string {
 	return fmt.Sprintf("(#%s)", replyHash)
 }
 
-func (t *TwtFile) SaveTwtxtFileWithMetadata(discloseIdentity bool) error {
+func (t *TwtFile) Save(discloseIdentity bool) error {
 	// Read twtxt.txt File
 	file, err := os.Open(t.Path)
 	if err != nil {
