@@ -5,12 +5,10 @@ import (
 	"log"
 	"os/exec"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
 	"github.com/tkanos/twx/config"
-	"github.com/tkanos/twx/twtfile"
 )
 
 var t tweet
@@ -74,30 +72,13 @@ type tweet struct {
 }
 
 func (t *tweet) Run(text string) error {
-	payload := twtfile.Tweet{
-		Nick:     context.Config.Twtxt.Nick,
-		URL:      context.Config.Twtxt.TwtURL,
-		Created:  time.Now(),
-		Text:     text,
-		Tweeting: true,
-	}
-
-	if replyHash != "" {
-		payload.Hash = getReplyHash()
-	}
 
 	//append to file or create file
-	if err := context.TwtFile.Append(payload.String()); err != nil {
+	if tweet, err := context.TwtFile.Tweet(context.Config.Twtxt.Nick, context.Config.Twtxt.TwtURL, text, replyHash); err != nil {
 		return err
+	} else {
+		fmt.Println(tweet.String())
 	}
 
-	fmt.Println(payload)
 	return nil
-}
-
-func getReplyHash() string {
-	if strings.HasPrefix(replyHash, "#") {
-		return fmt.Sprintf("(%s)", replyHash)
-	}
-	return fmt.Sprintf("(#%s)", replyHash)
 }

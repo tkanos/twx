@@ -97,6 +97,16 @@ func NewConfig(path string) (*Configuration, error) {
 	return config, nil
 }
 
+func (c *Configuration) Follow(nick, url string, replace bool) {
+	if _, ok := c.Following[nick]; !ok || replace {
+		c.Following[nick] = url
+	}
+}
+
+func (c *Configuration) Unfollow(nick string) {
+	delete(c.Following, nick)
+}
+
 func (c *Configuration) Save() error {
 	//viper.Set("twtxt.nick", c.Twtxt.Nick)
 	f, err := os.Create(c.path)

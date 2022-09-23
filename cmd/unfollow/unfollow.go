@@ -25,6 +25,17 @@ var unfollowCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 	},
+	PostRun: func(cmd *cobra.Command, args []string) {
+		//Save config and Twtxfile
+		// write the configuration to the selected config file
+		if err := context.Config.Save(); err != nil {
+			log.Fatalf("can't save config: %s", err)
+		}
+
+		//Write TwtxtFile Metadata
+		context.TwtFile.SaveTwtxtFileWithMetadata(context.Config.Twtxt.DiscloseIdentity)
+
+	},
 }
 
 func Init(rootCmd *cobra.Command) {
@@ -39,39 +50,11 @@ type unfollow struct {
 
 func (f *unfollow) Run(nick string) error {
 
-	// Trying to Remove following user in Config file
-	err := f.removeFollowingInConfig(nick)
+	// Remove Followed user in Config
+	context.Config.Unfollow(nick)
 
-	if err == nil && context.Config.Twtxt.DiscloseIdentity {
-		// Trying to Remove following user from twtxt.txt file
-		err = f.removeFollowingInMetadataOfTwtxtFile(nick)
-		if err != nil {
-			return err
-		}
-	}
+	//Remove Followed user in Twtxt.txt
+	context.TwtFile.Unfollow(nick)
 
 	return nil
-}
-
-func (f *unfollow) removeFollowingInConfig(nick string) error {
-
-	// search Nick
-	delete(context.Config.Following, nick)
-
-	// write the configuration to the selected config file
-	return context.Config.Save()
-}
-
-func (f *unfollow) removeFollowingInMetadataOfTwtxtFile(nick string) error {
-	if _, ok := context.TwtFile.Meta.Follow[nick]; ok {
-		context.TwtFile.Meta.Following = context.TwtFile.Meta.Following - 1
-	}
-
-	delete(context.TwtFile.Meta.Follow, nick)
-
-	//Save
-	context.TwtFile.SaveTwtxtFileWithMetadata(context.Config.Twtxt.DiscloseIdentity)
-
-	return nil
-
 }

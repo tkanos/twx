@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 )
 
 type TwtFile struct {
@@ -37,6 +38,64 @@ func NewTwtFile(nick, path, url string) (*TwtFile, error) {
 	}
 
 	return t, nil
+}
+
+func (t *TwtFile) Follow(nick, url string, replace bool) {
+	if _, ok := t.Meta.Follow[nick]; !ok || replace {
+		t.Meta.Follow[nick] = url
+		if !replace {
+			t.Meta.Following = t.Meta.Following + 1
+		}
+	}
+}
+
+func (t *TwtFile) Unfollow(nick string) {
+	if _, ok := t.Meta.Follow[nick]; ok {
+		t.Meta.Following = t.Meta.Following - 1
+	}
+
+	delete(t.Meta.Follow, nick)
+}
+
+func (t *TwtFile) Tweet(nick, url, text, replyHash string) (Tweet, error) {
+	tweet := Tweet{
+		Nick:     nick,
+		URL:      url,
+		Created:  time.Now(),
+		Text:     text,
+		tweeting: true,
+	}
+
+	if replyHash != "" {
+		tweet.Hash = getReplyHash(replyHash)
+	}
+
+	return tweet, t.appendTweet(tweet.String())
+}
+
+func (t *TwtFile) appendTweet(payload string) error {
+	if _, err := os.Stat(t.Path); errors.Is(err, os.ErrNotExist) {
+		// file does not exist
+	}
+
+	f, err := os.OpenFile(t.Path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if _, err = f.WriteString(payload); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getReplyHash(replyHash string) string {
+	if strings.HasPrefix(replyHash, "#") {
+		return fmt.Sprintf("(%s)", replyHash)
+	}
+	return fmt.Sprintf("(#%s)", replyHash)
 }
 
 func (t *TwtFile) SaveTwtxtFileWithMetadata(discloseIdentity bool) error {
@@ -87,24 +146,6 @@ func (t *TwtFile) SaveTwtxtFileWithMetadata(discloseIdentity bool) error {
 	err = os.Rename(newfilePath, t.Path)
 	if err != nil {
 		return fmt.Errorf("could not rename %s to %s, %w", newfilePath, t.Path, err)
-	}
-
-	return nil
-}
-
-func (t *TwtFile) Append(payload string) error {
-	if _, err := os.Stat(t.Path); errors.Is(err, os.ErrNotExist) {
-		// file does not exist
-	}
-
-	f, err := os.OpenFile(t.Path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	if _, err = f.WriteString(payload); err != nil {
-		return err
 	}
 
 	return nil

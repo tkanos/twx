@@ -5,6 +5,7 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 
 
 # Todo :
+
 ## Timeline : 
 - replace on timeline @nick or @<nick url> and present it like : @nick@url
 - highlight tags
@@ -34,6 +35,9 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 - see users's Tweets Command
 - User Profile (metadata) Command
 - Mentions and Replied Thread Commands
+- Discover Command (download the followings of users that you follow ....)
+- Should we separate feed from follow ?
+- version console interactive (IRC like)
 
 ## Hook :
 - yarn connection post (with keeping connection)

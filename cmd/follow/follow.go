@@ -35,6 +35,17 @@ var followCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 	},
+	PostRun: func(cmd *cobra.Command, args []string) {
+		//Save config and Twtxfile
+		// write the configuration to the selected config file
+		if err := context.Config.Save(); err != nil {
+			log.Fatalf("can't save config: %s", err)
+		}
+
+		//Write TwtxtFile Metadata
+		context.TwtFile.SaveTwtxtFileWithMetadata(context.Config.Twtxt.DiscloseIdentity)
+
+	},
 }
 
 var replace bool
@@ -61,18 +72,12 @@ func (f *follow) Run(nick, url string) error {
 		}
 	}
 
-	//Trying to add following user to Config file
-	err := f.addFollowingInConfig(nick, url)
-	if err != nil {
-		return err
-	}
+	//Follow user in Config
+	context.Config.Follow(nick, url, replace)
 
 	if context.Config.Twtxt.DiscloseIdentity {
-		//Trying to add following user to twtxt.txt file
-		err = f.addFollowingInMetadataOfTwtxtFile(nick, url)
-		if err != nil {
-			return err
-		}
+		//Follow user in twtxt.txt
+		context.TwtFile.Follow(nick, url, replace)
 	}
 
 	return nil
@@ -126,37 +131,6 @@ func (f *follow) validateGemini(nick, url string) error {
 		return fmt.Errorf("gemini status %d failed", res.Status)
 	}
 
-	return nil
-
-}
-
-func (f *follow) addFollowingInConfig(nick, url string) error {
-	// check for duplicate and whether duplicate is allowed
-	if _, ok := context.Config.Following[nick]; ok && !replace {
-		return nil // fmt.Errorf("already following @%s %s", nick, url)
-	}
-
-	// update the following section
-	context.Config.Following[nick] = url
-
-	// write the configuration to the selected config file
-	if err := context.Config.Save(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (f *follow) addFollowingInMetadataOfTwtxtFile(nick, url string) error {
-	if _, ok := context.TwtFile.Meta.Follow[nick]; !ok || replace {
-		context.TwtFile.Meta.Follow[nick] = url
-		if !replace {
-			context.TwtFile.Meta.Following = context.TwtFile.Meta.Following + 1
-		}
-	}
-
-	//Save
-	context.TwtFile.SaveTwtxtFileWithMetadata(context.Config.Twtxt.DiscloseIdentity)
 	return nil
 
 }

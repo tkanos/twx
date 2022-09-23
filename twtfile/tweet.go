@@ -16,7 +16,7 @@ type Tweet struct {
 	Created  time.Time
 	Hash     string
 	Text     string
-	Tweeting bool
+	tweeting bool
 }
 
 func (t Tweet) String() string {
@@ -24,7 +24,7 @@ func (t Tweet) String() string {
 	if hash == "" {
 		hash = t.GenerateHash(t.URL, t.Created, t.Text)
 	}
-	if !t.Tweeting {
+	if !t.tweeting {
 		return fmt.Sprintf("%s\n%s\t%s\t%s\n", t.Nick, t.Created.Format(time.RFC3339), hash, t.Text)
 	}
 	return fmt.Sprintf("%s\t%s\t%s\n", t.Created.Format(time.RFC3339), hash, t.Text)

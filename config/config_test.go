@@ -98,3 +98,91 @@ func tmpFileWithContent(t *testing.T, content []byte) string {
 
 	return newName
 }
+
+func TestUnfollow(t *testing.T) {
+
+	// Arrange
+	test_data := []struct {
+		f       func() string
+		message string
+	}{
+		{
+			f: func() string {
+				return tmpFileWithContent(t, []byte(`[TWTXT]
+Nick="nick"
+
+[Following]
+Nick = "http://example.com/Nick/twtxt.txt"`))
+			},
+			message: "1. Config should remove followed user",
+		},
+		{
+			f: func() string {
+				return tmpFileWithContent(t, []byte(`[TWTXT]
+Nick="nick"`))
+			},
+			message: "2. Config should not have user, if the user was not followed anyway",
+		},
+	}
+
+	for _, tt := range test_data {
+		// Arrange
+		file := tt.f()
+		defer os.Remove(file)
+
+		c, _ := NewConfig(file)
+
+		// Act
+		c.Unfollow("Nick")
+
+		// Assert
+		_, ok := c.Following["Nick"]
+		assert.Equal(t, false, ok, tt.message)
+
+	}
+}
+
+func TestFollow(t *testing.T) {
+
+	// Arrange
+	test_data := []struct {
+		f       func() string
+		err     bool
+		message string
+	}{
+		{
+			f: func() string {
+				return tmpFileWithContent(t, []byte(`[TWTXT]
+				Nick="nick"`))
+			},
+			message: "1. Config should have the followed user",
+		},
+		{
+			f: func() string {
+				return tmpFileWithContent(t, []byte(`[TWTXT]
+Nick="nick"
+
+[Following]
+Nick = "http://example.com/Nick/twtxt.txt"`))
+			},
+			err:     false,
+			message: "2. Config should not rewrite user",
+		},
+	}
+
+	for _, tt := range test_data {
+		// Arrange
+		file := tt.f()
+		defer os.Remove(file)
+
+		c, _ := NewConfig(file)
+
+		// Act
+		c.Follow("Nick", "http://example.com/Nick/twtxt.txt", false)
+
+		// Assert
+		_, ok := c.Following["Nick"]
+		assert.Equal(t, true, ok, tt.message)
+
+	}
+}
