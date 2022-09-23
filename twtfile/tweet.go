@@ -25,7 +25,7 @@ func (t Tweet) String() string {
 		hash = t.GenerateHash(t.URL, t.Created, t.Text)
 	}
 	if !t.tweeting {
-		return fmt.Sprintf("%s\n%s\t%s\t%s\n", t.Nick, t.Created.Format(time.RFC3339), hash, t.Text)
+		return fmt.Sprintf("%s\t%s\t%s\t%s\n", t.Nick, t.Created.Format(time.RFC3339), hash, t.Text)
 	}
 	return fmt.Sprintf("%s\t%s\t%s\n", t.Created.Format(time.RFC3339), hash, t.Text)
 }

@@ -60,7 +60,9 @@ func (t *timeline) Run(text string) error {
 	// Sorting Tweets
 	tweets = t.Sort(tweets, context.Config.Twtxt.Sorting, context.Config.Twtxt.LimitTimeline, reverse)
 
-	fmt.Println(tweets)
+	for _, v := range tweets {
+		fmt.Println(v)
+	}
 
 	return nil
 }
