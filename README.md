@@ -2,9 +2,38 @@
 
 A decentralised microblogging client based on the specs of [twtxt](https://dev.twtxt.net/), used to handle your twtxt file.
 
+## Why another client
+I love twtxt format for it's simplicity and being real decentralized communication protocol. 
+But I see some issues that I want to focus. So i craeted my own twtxt client because I was not happy with the existing one, and to be able to make tests to evolve the format on what I think lack to the protocol :
+
+1. Having a nice Client, I can evolve and do pocs
+2. Decentralized ID
+3. Tweet Encryption
+4. Metadata (Profile) Encryption
+5. Discoverability
+
+## Already Done :
+twx can :
+- post a tweet
+- reply to a tweet
+- create a timeline
+- follow people
+- unfollow people
+- preHook and postHook
 
 
-# Todo :
+## Todo :
+twx can't *yet* :
+- Have a pretty Timeline (in many format)
+- Have caching
+- Have plugin hooks (to github / gdrive /one drive / ...)
+- Lot of useful commands (thread, tags, profile, ....)
+- create a local webserver
+- Encryption
+- Discoverability
+- Decentralized ID
+
+### Todo in more precise way :
 
 ## Timeline : 
 - replace on timeline @nick or @<nick url> and present it like : @nick@url
