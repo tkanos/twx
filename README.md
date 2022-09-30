@@ -4,13 +4,12 @@ A decentralised microblogging client based on the specs of [twtxt](https://dev.t
 
 ## Why another client
 I love twtxt format for it's simplicity and being real decentralized communication protocol. 
-But I see some issues that I want to focus. So i craeted my own twtxt client because I was not happy with the existing one, and to be able to make tests to evolve the format on what I think lack to the protocol :
+But I see some issues that I want to focus. So i created my own twtxt client because I want to be able to make tests to evolve the format, on what I think lack to the protocol :
 
-1. Having a nice Client, I can evolve and do pocs
-2. Decentralized ID
-3. Tweet Encryption
-4. Metadata (Profile) Encryption
-5. Discoverability
+1. Decentralized ID
+2. Tweet Encryption
+3. Metadata (Profile) Encryption
+4. Discoverability
 
 ## Already Done :
 twx can :
@@ -33,7 +32,7 @@ twx can't *yet* :
 - Discoverability
 - Decentralized ID
 
-### Todo in more precise way :
+### Todo ( more precise ) :
 
 ## Timeline : 
 - replace on timeline @nick or @<nick url> and present it like : @nick@url
