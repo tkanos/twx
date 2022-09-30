@@ -10,6 +10,8 @@ But I see some issues that I want to focus. So i created my own twtxt client bec
 2. Tweet Encryption
 3. Metadata (Profile) Encryption
 4. Discoverability
+5. Ability to create rooms
+6. Ability to administrate rooms
 
 ## Already Done :
 twx can :
