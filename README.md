@@ -3,7 +3,7 @@
 A decentralised microblogging client based on the specs of [twtxt](https://dev.twtxt.net/), used to handle your twtxt file.
 
 ## Why another client
-I love twtxt format for it's simplicity and being real decentralized communication protocol. 
+I love twtxt format for its simplicity and being real decentralized communication protocol. 
 But I see some issues that I want to focus. So i created my own twtxt client because I want to be able to make tests to evolve the format, on what I think lack to the protocol :
 
 1. Decentralized ID
