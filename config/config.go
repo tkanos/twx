@@ -23,8 +23,12 @@ type Configuration struct {
 	path string
 	// Twtxt
 	Twtxt TwtxtConfig
+
 	// Following
 	Following map[string]string
+
+	// Post Hook
+	PostHook map[string]string
 }
 
 // TwtxtConfig represents the twtxt config [https://twtxt.readthedocs.io/en/latest/user/configuration.html].

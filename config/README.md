@@ -32,6 +32,9 @@ post_tweet_hook = "scp {twtfile} buckket@example.org:~/public_html/twtxt.txt"
 [following]
 bob = "https://example.org/bob.txt"
 alice = "https://example.org/alice.txt"
+
+[posthook]
+yarn_url = "https://twtxt.net/"
 ```
 
 ## [twtxt]
@@ -60,3 +63,8 @@ pre_tweet_hook and post_tweet_hook are very useful if you want to push your twtx
 ## [followings]
 
 This section holds all your followings as nick, URL pairs. You can edit this section manually or use the follow/unfollow commands of twtxt for greater comfort.
+
+## [posthook]
+
+depending of the post hook plugin you want to use, you need to add some config.
+The key should be compose of the pluginNAme_Key example : YARN_URL, or GITHUB_SSH, ......

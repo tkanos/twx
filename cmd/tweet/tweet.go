@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
+	"github.com/tkanos/twx/cmd/hooks"
 	"github.com/tkanos/twx/config"
 )
 
@@ -46,13 +47,19 @@ var tweetCmd = &cobra.Command{
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		if context.Config.Twtxt.PostTweetHook != "" {
-			cmd := exec.Command("/bin/sh", "-c", context.Config.Twtxt.PostTweetHook)
-			cmd.Dir = config.HomeDirectory()
-
-			err := cmd.Run()
+			conf, err := hooks.Execute("cmd", "tweet", context.Config.Twtxt.PostTweetHook, context.Config.PostHook)
 			if err != nil {
 				log.Fatalf("Could not execute PostHook: %s", err)
 			}
+
+			if conf != nil {
+				context.Config.PostHook = conf
+				err = context.Config.Save()
+				if err != nil {
+					log.Fatalf("the tweet post command executed successfully but the config could not be saved: %s", err)
+				}
+			}
+
 		}
 	},
 }
