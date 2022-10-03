@@ -54,8 +54,10 @@ func (t *timeline) Run(text string) error {
 		tweets = append(tweets, f...)
 	}
 
-	// Adding my own tweets
-	tweets = append(tweets, context.TwtFile.Tweets...)
+	if context.Config.Twtxt.IncludeYourself {
+		// Adding my own tweets
+		tweets = append(tweets, context.TwtFile.Tweets...)
+	}
 
 	// Sorting Tweets
 	tweets = t.Sort(tweets, context.Config.Twtxt.Sorting, context.Config.Twtxt.LimitTimeline, reverse)

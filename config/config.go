@@ -49,6 +49,8 @@ type TwtxtConfig struct {
 	Porcelain bool
 	//disclose_identity: include nick and twturl in twtxt’s user-agent
 	DiscloseIdentity bool
+	//incluse_yourself: to include yourself in the timeline or not.
+	IncludeYourself bool
 	//character_warning: warn when composed tweet has more characters
 	CharacterWarning int
 	//limit_timeline: limit amount of tweets shown in your timeline
@@ -66,6 +68,8 @@ type TwtxtConfig struct {
 	PreTweetHook string
 	//post_tweet_hook: command to be executed after tweeting
 	PostTweetHook string
+	//timeline_ascii_images: Show images on ascii in console
+	TimelineAsciiImages bool
 }
 
 func (c *Configuration) TimeoutDuration() time.Duration {
