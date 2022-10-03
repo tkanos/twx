@@ -69,7 +69,6 @@ twx can't *yet* :
 - version console interactive (IRC like)
 
 ## Hook :
-- yarn connection post (with keeping connection)
 - github integration (nick/twtxt.txt)
 - drive integration
 - one drive integration 

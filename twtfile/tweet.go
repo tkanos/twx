@@ -21,13 +21,17 @@ type Tweet struct {
 
 func (t Tweet) String() string {
 	hash := t.Hash
-	if hash == "" {
-		hash = t.GenerateHash(t.URL, t.Created, t.Text)
-	}
 	if !t.tweeting {
-		return fmt.Sprintf("%s\t%s\t%s\t%s\n", t.Nick, t.Created.Format(time.RFC3339), hash, t.Text)
+		if hash == "" {
+			hash = t.GenerateHash(t.URL, t.Created, t.Text)
+		}
+		return fmt.Sprintf("%s\t%s\t%s %s\n", t.Nick, t.Created.Format(time.RFC3339), hash, t.Text)
 	}
-	return fmt.Sprintf("%s\t%s\t%s\n", t.Created.Format(time.RFC3339), hash, t.Text)
+	if hash == "" {
+		return fmt.Sprintf("%s\t%s\n", t.Created.Format(time.RFC3339), t.Text)
+	} else {
+		return fmt.Sprintf("%s\t%s %s\n", t.Created.Format(time.RFC3339), hash, t.Text)
+	}
 }
 
 func (t Tweet) GenerateHash(url string, created time.Time, text string) string {

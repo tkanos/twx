@@ -3,13 +3,12 @@ package tweet
 import (
 	"fmt"
 	"log"
-	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
 	"github.com/tkanos/twx/cmd/hooks"
-	"github.com/tkanos/twx/config"
 )
 
 var t tweet
@@ -25,14 +24,32 @@ var tweetCmd = &cobra.Command{
 	tweet Hello world
 	tweet -r ab123c Nice to meet you.`,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		if context.Config.Twtxt.PreTweetHook != "" {
-			cmd := exec.Command("/bin/sh", "-c", context.Config.Twtxt.PreTweetHook)
-			cmd.Dir = config.HomeDirectory()
 
-			err := cmd.Run()
-			if err != nil {
-				log.Fatalf("Could not execute PreHook: %s", err)
+		argstweet = strings.Join(args, "")
+
+		if context.Config.Twtxt.PreTweetHook != "" {
+			etype := "cmd"
+			switch context.Config.Twtxt.PreTweetHook {
+			case "{{yarn}}":
+				etype = "yarn"
 			}
+
+			conf, output, err := hooks.Execute(etype, "tweet", context.Config.Twtxt.PreTweetHook, map[string]string{"tweet": argstweet, "reply": replyHash}, context.Config.Hook)
+			if err != nil {
+				log.Fatalf("Could not execute PostHook: %s", err)
+			}
+			if c, ok := output["created"]; ok {
+				created = c
+			}
+
+			if conf != nil {
+				context.Config.Hook = conf
+				err = context.Config.Save()
+				if err != nil {
+					fmt.Printf("the tweet pre command executed successfully but the config could not be saved: %s\n", err)
+				}
+			}
+
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -40,31 +57,32 @@ var tweetCmd = &cobra.Command{
 			log.Fatal("Wrong arguments")
 		}
 
-		if err := t.Run(strings.Join(args, "")); err != nil {
+		if err := t.Run(argstweet); err != nil {
 			log.Fatal(err)
 		}
 
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		if context.Config.Twtxt.PostTweetHook != "" {
-			conf, err := hooks.Execute("cmd", "tweet", context.Config.Twtxt.PostTweetHook, context.Config.PostHook)
+			etype := "cmd"
+			conf, _, err := hooks.Execute(etype, "tweet", context.Config.Twtxt.PostTweetHook, map[string]string{"tweet": argstweet, "reply": replyHash}, context.Config.Hook)
 			if err != nil {
 				log.Fatalf("Could not execute PostHook: %s", err)
 			}
 
 			if conf != nil {
-				context.Config.PostHook = conf
+				context.Config.Hook = conf
 				err = context.Config.Save()
 				if err != nil {
 					log.Fatalf("the tweet post command executed successfully but the config could not be saved: %s", err)
 				}
 			}
-
 		}
 	},
 }
 
 var replyHash string
+var created string
 
 func Init(rootCmd *cobra.Command) {
 
@@ -75,16 +93,24 @@ func Init(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(tweetCmd)
 }
 
+var argstweet string
+
 type tweet struct {
 }
 
 func (t *tweet) Run(text string) error {
 
+	cTime := time.Now()
+	if created != "" {
+		cTime, _ = time.Parse(time.RFC3339, created)
+	}
+
 	//append to file or create file
-	if tweet, err := context.TwtFile.Tweet(context.Config.Twtxt.Nick, context.Config.Twtxt.TwtURL, text, replyHash); err != nil {
+	if tweet, err := context.TwtFile.Tweet(context.Config.Twtxt.Nick, context.Config.Twtxt.TwtURL, text, replyHash, cTime); err != nil {
 		return err
 	} else {
-		fmt.Println(tweet.String())
+		argstweet = tweet.String()
+		fmt.Println(argstweet)
 	}
 
 	return nil

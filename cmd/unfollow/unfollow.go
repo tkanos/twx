@@ -1,10 +1,12 @@
 package unfollow
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
+	"github.com/tkanos/twx/cmd/hooks"
 )
 
 var f unfollow
@@ -16,6 +18,35 @@ var unfollowCmd = &cobra.Command{
 	Long: `Unfollow another user
 	
 	Example: unfollow Nick`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			log.Fatal("Wrong arguments")
+		}
+
+		if context.Config.Twtxt.PreTweetHook != "" {
+			var etype string
+			switch context.Config.Twtxt.PreTweetHook {
+			case "{{yarn}}":
+				etype = "yarn"
+			default:
+				return
+			}
+
+			conf, _, err := hooks.Execute(etype, "unfollow", context.Config.Twtxt.PreTweetHook, map[string]string{"nick": args[0]}, context.Config.Hook)
+			if err != nil {
+				log.Fatalf("Could not execute PreHook: %s", err)
+			}
+
+			if conf != nil {
+				context.Config.Hook = conf
+				err = context.Config.Save()
+				if err != nil {
+					fmt.Printf("the tweet pre command executed successfully but the config could not be saved: %s\n", err)
+				}
+			}
+
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			log.Fatal("Wrong arguments")

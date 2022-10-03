@@ -6,10 +6,10 @@ import (
 	"github.com/tkanos/twx/config"
 )
 
-func Execute(action string, command string, conf map[string]string) (configToSave map[string]string, err error) {
+func Execute(action string, command string, conf map[string]string) (configToSave map[string]string, parameters map[string]string, err error) {
 
 	if action != "tweet" {
-		return nil, nil
+		return nil, nil, nil
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", command)
@@ -17,8 +17,8 @@ func Execute(action string, command string, conf map[string]string) (configToSav
 
 	err = cmd.Run()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return nil, nil
+	return nil, nil, nil
 }

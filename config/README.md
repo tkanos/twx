@@ -33,7 +33,7 @@ post_tweet_hook = "scp {twtfile} buckket@example.org:~/public_html/twtxt.txt"
 bob = "https://example.org/bob.txt"
 alice = "https://example.org/alice.txt"
 
-[posthook]
+[hook]
 yarn_url = "https://twtxt.net/"
 ```
 
@@ -64,7 +64,19 @@ pre_tweet_hook and post_tweet_hook are very useful if you want to push your twtx
 
 This section holds all your followings as nick, URL pairs. You can edit this section manually or use the follow/unfollow commands of twtxt for greater comfort.
 
-## [posthook]
+## [hook]
 
-depending of the post hook plugin you want to use, you need to add some config.
-The key should be compose of the pluginNAme_Key example : YARN_URL, or GITHUB_SSH, ......
+depending of the pre/post hook plugin you want to use, you need to add some config.
+The key should be composed of the pluginName_Key, in lower case example : yarn_url, or github_ssh, ......
+
+## [Yarn Hook Plugin]
+
+Yarn Social hook plugin is a preHook execution. It means that twx will first Post the tweet or follow or Unfollow to your yarn instance, and then write it to your local twtxt file.
+For that you need to apply the following changes
+```
+[twtxt]
+pre_tweet_hook = "{{yarn}}"
+
+[hook]
+yarn_url = "https://mine.yarnsocial.net/" # your yarn social instance url
+```

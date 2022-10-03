@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
 	"github.com/tkanos/twx/cmd/follow"
-	"github.com/tkanos/twx/cmd/quickstart"
 	"github.com/tkanos/twx/cmd/timeline"
 	"github.com/tkanos/twx/cmd/tweet"
 	"github.com/tkanos/twx/cmd/unfollow"
@@ -80,7 +79,7 @@ func init() {
 	}
 	configDefaultFile := filepath.Join(configFolder, "twtxt", "config")
 	rootCmd.PersistentFlags().StringVarP(&configfile, "config", "c", configDefaultFile, fmt.Sprintf("config file (default is %s)", configDefaultFile))
-	quickstart.Init(rootCmd)
+	//quickstart.Init(rootCmd)
 	follow.Init(rootCmd)
 	unfollow.Init(rootCmd)
 	tweet.Init(rootCmd)

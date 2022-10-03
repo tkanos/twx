@@ -57,11 +57,11 @@ func (t *TwtFile) Unfollow(nick string) {
 	delete(t.Meta.Follow, nick)
 }
 
-func (t *TwtFile) Tweet(nick, url, text, replyHash string) (Tweet, error) {
+func (t *TwtFile) Tweet(nick, url, text, replyHash string, created time.Time) (Tweet, error) {
 	tweet := Tweet{
 		Nick:     nick,
 		URL:      url,
-		Created:  time.Now(),
+		Created:  created,
 		Text:     text,
 		tweeting: true,
 	}

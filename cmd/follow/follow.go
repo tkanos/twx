@@ -3,15 +3,14 @@ package follow
 import (
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"strings"
-	"sync"
-	"time"
 
 	"github.com/makeworld-the-better-one/go-gemini"
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
+	"github.com/tkanos/twx/cmd/hooks"
+	"github.com/tkanos/twx/httpclient"
 )
 
 var f follow
@@ -23,13 +22,42 @@ var followCmd = &cobra.Command{
 	Long: `Follow another user of an existing twtxt.txt feed
 	
 	Example: follow hacker-news https://feeds.twtxt.net/hacker-news/twtxt.txt`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		if len(args) < 2 {
+			log.Fatal("Wrong Arguments passed")
+		}
+
+		if context.Config.Twtxt.PreTweetHook != "" {
+			var etype string
+			switch context.Config.Twtxt.PreTweetHook {
+			case "{{yarn}}":
+				etype = "yarn"
+			default:
+				return
+			}
+
+			conf, _, err := hooks.Execute(etype, "follow", context.Config.Twtxt.PreTweetHook, map[string]string{"nick": args[0], "url": args[1]}, context.Config.Hook)
+			if err != nil {
+				log.Fatalf("Could not execute PreHook: %s", err)
+			}
+
+			if conf != nil {
+				context.Config.Hook = conf
+				err = context.Config.Save()
+				if err != nil {
+					fmt.Printf("the tweet pre command executed successfully but the config could not be saved: %s\n", err)
+				}
+			}
+
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if len(args) < 2 {
 			log.Fatal("Wrong Arguments passed")
 		}
 
-		f.client = getHTTPClient(context.Config.TimeoutDuration())
+		f.client = httpclient.GetHTTPClient(context.Config.TimeoutDuration())
 
 		if err := f.Run(args[0], args[1]); err != nil {
 			log.Fatal(err)
@@ -132,33 +160,5 @@ func (f *follow) validateGemini(nick, url string) error {
 	}
 
 	return nil
-
-}
-
-var client *http.Client
-var once sync.Once
-
-func getHTTPClient(timeout time.Duration) *http.Client {
-	if client == nil {
-		once.Do(func() {
-			netTransport := &http.Transport{
-				Dial: (&net.Dialer{
-					Timeout:   time.Second,
-					KeepAlive: 0,
-				}).Dial,
-				TLSHandshakeTimeout: 5 * time.Second,
-				IdleConnTimeout:     0,
-				MaxIdleConnsPerHost: 50000,
-				MaxIdleConns:        50000,
-			}
-
-			client = &http.Client{
-				Timeout:   timeout,
-				Transport: netTransport,
-			}
-		})
-	}
-
-	return client
 
 }

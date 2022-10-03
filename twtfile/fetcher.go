@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/makeworld-the-better-one/go-gemini"
+	"github.com/tkanos/twx/httpclient"
 )
 
 type Fetcher struct {
@@ -24,13 +23,13 @@ type Fetcher struct {
 func NewFetcher(version string, discloseIdentity bool, timeout time.Duration) *Fetcher {
 	return &Fetcher{version: version,
 		discloseIdentity: discloseIdentity,
-		client:           getHTTPClient(timeout),
+		client:           httpclient.GetHTTPClient(timeout),
 	}
 }
 
 func (f *Fetcher) Fetch(nick, url string) (Tweets, TweetMetadata, error) {
 	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
-		return fetchHttp(nick, url, f.version, f.discloseIdentity)
+		return f.fetchHttp(nick, url, f.version, f.discloseIdentity)
 	}
 
 	if strings.HasPrefix(url, "gemini://") {
@@ -40,7 +39,7 @@ func (f *Fetcher) Fetch(nick, url string) (Tweets, TweetMetadata, error) {
 	return Tweets{}, TweetMetadata{}, nil
 }
 
-func fetchHttp(nick, url, version string, discloseIdentity bool) (Tweets, TweetMetadata, error) {
+func (f *Fetcher) fetchHttp(nick, url, version string, discloseIdentity bool) (Tweets, TweetMetadata, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return Tweets{}, TweetMetadata{}, fmt.Errorf("could not create request to %s, %w", url, err)
@@ -52,7 +51,7 @@ func fetchHttp(nick, url, version string, discloseIdentity bool) (Tweets, TweetM
 		req.Header.Set("User-Agent", fmt.Sprintf("twx/%s", version))
 	}
 
-	res, err := client.Do(req)
+	res, err := f.client.Do(req)
 	if err != nil {
 		return Tweets{}, TweetMetadata{}, fmt.Errorf("could not request %s, %w", url, err)
 	}
@@ -124,32 +123,4 @@ func parseBody(nick string, url string, b []byte) (Tweets, TweetMetadata) {
 		}
 	}
 	return ts, meta
-}
-
-var client *http.Client
-var once sync.Once
-
-func getHTTPClient(timeout time.Duration) *http.Client {
-	if client == nil {
-		once.Do(func() {
-			netTransport := &http.Transport{
-				Dial: (&net.Dialer{
-					Timeout:   time.Second,
-					KeepAlive: 0,
-				}).Dial,
-				TLSHandshakeTimeout: 5 * time.Second,
-				IdleConnTimeout:     0,
-				MaxIdleConnsPerHost: 50000,
-				MaxIdleConns:        50000,
-			}
-
-			client = &http.Client{
-				Timeout:   timeout,
-				Transport: netTransport,
-			}
-		})
-	}
-
-	return client
-
 }
