@@ -3,6 +3,7 @@ package tweet
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strings"
 	"time"
 
@@ -105,6 +106,8 @@ func (t *tweet) Run(text string) error {
 		cTime, _ = time.Parse(time.RFC3339, created)
 	}
 
+	text = addMentions(text)
+
 	//append to file or create file
 	if tweet, err := context.TwtFile.Tweet(context.Config.Twtxt.Nick, context.Config.Twtxt.TwtURL, text, replyHash, cTime); err != nil {
 		return err
@@ -114,4 +117,33 @@ func (t *tweet) Run(text string) error {
 	}
 
 	return nil
+}
+
+var re = regexp.MustCompile(`@[^< ]+`)
+
+func addMentions(twt string) string {
+	if !strings.Contains(twt, "@") {
+		return twt
+	}
+
+	groups := re.FindAllString(twt, -1)
+	if groups == nil {
+		return twt
+	}
+
+	replaced := 0
+	for k, v := range context.Config.Following {
+		for _, nick := range groups {
+			if strings.EqualFold("@"+k, nick) {
+				replaced++
+				twt = strings.Replace(twt, nick, fmt.Sprintf("@<%s %s>", k, v), 1)
+			}
+		}
+		if replaced == len(groups) {
+			break
+		}
+	}
+
+	return twt
+
 }

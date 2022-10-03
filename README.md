@@ -50,7 +50,6 @@ twx can't *yet* :
 - timeline with thread organized
 
 ## Tweet :
-- Tweet @nick will replace before to append
 - character_warning: warn when composed tweet has more characters
 - Encryption 
 
