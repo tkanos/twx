@@ -57,6 +57,7 @@ yarn_url = "https://twtxt.net/"
 |use_abs_time|BOOL|False|use absolute datetimes in your timeline|
 |pre_tweet_hook|TEXT|   |command to be executed before tweeting|
 |post_tweet_hook|TEXT|   |command to be executed after tweeting|
+|show_ascii_images|BOOL|   |Show the images in ascii mode on the terminal|
 
 pre_tweet_hook and post_tweet_hook are very useful if you want to push your twtxt file to a remote (web) server. Check the example above tho see how it’s used with scp.
 

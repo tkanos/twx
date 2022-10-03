@@ -68,8 +68,8 @@ type TwtxtConfig struct {
 	PreTweetHook string
 	//post_tweet_hook: command to be executed after tweeting
 	PostTweetHook string
-	//timeline_ascii_images: Show images on ascii in console
-	TimelineAsciiImages bool
+	//show_ascii_images: Show images on ascii in console
+	ShowAsciiImages bool
 }
 
 func (c *Configuration) TimeoutDuration() time.Duration {

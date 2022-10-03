@@ -43,7 +43,6 @@ twx can't *yet* :
 - use_pager: use a pager (less) to display your timeline (sorting not apply here)
 - porcelain style output in an easy-to-parse format (without pretty things)
 - use_abs_time: use absolute datetimes in your timeline
-- timeline_show_ascii_images Show images on ascii
 - timeline --web
 - timeline --gemini
 - timeline generates microformat v2 (https://microformats.org/wiki/microformats2) => html to see

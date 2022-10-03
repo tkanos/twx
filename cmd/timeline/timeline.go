@@ -2,10 +2,18 @@ package timeline
 
 import (
 	"fmt"
+	_ "image/jpeg"
+	_ "image/png"
+	"io"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"os"
+	"regexp"
 	"sort"
 	"strings"
 
+	"github.com/qeesung/image2ascii/convert"
 	"github.com/spf13/cobra"
 	"github.com/tkanos/twx/cmd/context"
 	"github.com/tkanos/twx/twtfile"
@@ -63,6 +71,9 @@ func (t *timeline) Run(text string) error {
 	tweets = t.Sort(tweets, context.Config.Twtxt.Sorting, context.Config.Twtxt.LimitTimeline, reverse)
 
 	for _, v := range tweets {
+		if context.Config.Twtxt.ShowAsciiImages {
+			v.Text = appendAscii(v.Text)
+		}
 		fmt.Println(v)
 	}
 
@@ -87,4 +98,47 @@ func (t *timeline) Sort(tweets twtfile.Tweets, sorting string, limit int, revers
 	}
 
 	return tweets
+}
+
+var re = regexp.MustCompile(`(http[^ ]+\.(png|jpg|jpeg))`)
+
+func appendAscii(line string) string {
+	if !strings.Contains(line, ".jpg") && !strings.Contains(line, ".jpeg") && !strings.Contains(line, ".png") {
+		return line
+	}
+
+	groups := re.FindAllString(line, -1)
+	if groups == nil {
+		return line
+	}
+
+	for _, link := range groups {
+		file, err := ioutil.TempFile("", "twtxt_images_")
+		if err != nil {
+			continue
+		}
+		defer os.Remove(file.Name())
+
+		resp, err := http.Get(link)
+		if err != nil {
+			continue
+		}
+
+		_, err = io.Copy(file, resp.Body)
+		resp.Body.Close()
+		file.Close()
+		if err == nil {
+			convertOptions := convert.DefaultOptions
+			convertOptions.Colored = true
+			convertOptions.Ratio = 1
+
+			// Create the image converter
+			converter := convert.NewImageConverter()
+			line = line + "\n" + converter.ImageFile2ASCIIString(file.Name(), &convertOptions)
+		}
+
+	}
+
+	return line
+
 }
